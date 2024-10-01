@@ -7,28 +7,31 @@ Rule 1     statement -> PRINTF LEFT_PARENTESIS first_arg additional_args RIGHT_P
 Rule 2     first_arg -> STRING
 Rule 3     additional_args -> COMMA arg additional_args
 Rule 4     additional_args -> COMMA arg
-Rule 5     additional_args -> <empty>
-Rule 6     arg -> INT
-Rule 7     arg -> FLOAT
-Rule 8     arg -> IDENTIFIER
+Rule 5     additional_args -> empty
+Rule 6     empty -> <empty>
+Rule 7     arg -> INT
+Rule 8     arg -> FLOAT
+Rule 9     arg -> STRING
+Rule 10    arg -> IDENTIFIER
 
 Terminals, with rules where they appear
 
 COMMA                : 3 4
-FLOAT                : 7
-IDENTIFIER           : 8
-INT                  : 6
+FLOAT                : 8
+IDENTIFIER           : 10
+INT                  : 7
 LEFT_PARENTESIS      : 1
 PRINTF               : 1
 RIGHT_PARENTESIS     : 1
 SEMICOLON            : 1
-STRING               : 2
+STRING               : 2 9
 error                : 
 
 Nonterminals, with rules where they appear
 
 additional_args      : 1 3
 arg                  : 3 4
+empty                : 5
 first_arg            : 1
 statement            : 0
 
@@ -70,12 +73,14 @@ state 4
     (1) statement -> PRINTF LEFT_PARENTESIS first_arg . additional_args RIGHT_PARENTESIS SEMICOLON
     (3) additional_args -> . COMMA arg additional_args
     (4) additional_args -> . COMMA arg
-    (5) additional_args -> .
+    (5) additional_args -> . empty
+    (6) empty -> .
 
     COMMA           shift and go to state 7
-    RIGHT_PARENTESIS reduce using rule 5 (additional_args -> .)
+    RIGHT_PARENTESIS reduce using rule 6 (empty -> .)
 
     additional_args                shift and go to state 6
+    empty                          shift and go to state 8
 
 state 5
 
@@ -89,78 +94,97 @@ state 6
 
     (1) statement -> PRINTF LEFT_PARENTESIS first_arg additional_args . RIGHT_PARENTESIS SEMICOLON
 
-    RIGHT_PARENTESIS shift and go to state 8
+    RIGHT_PARENTESIS shift and go to state 9
 
 
 state 7
 
     (3) additional_args -> COMMA . arg additional_args
     (4) additional_args -> COMMA . arg
-    (6) arg -> . INT
-    (7) arg -> . FLOAT
-    (8) arg -> . IDENTIFIER
+    (7) arg -> . INT
+    (8) arg -> . FLOAT
+    (9) arg -> . STRING
+    (10) arg -> . IDENTIFIER
 
-    INT             shift and go to state 10
-    FLOAT           shift and go to state 11
-    IDENTIFIER      shift and go to state 12
+    INT             shift and go to state 11
+    FLOAT           shift and go to state 12
+    STRING          shift and go to state 13
+    IDENTIFIER      shift and go to state 14
 
-    arg                            shift and go to state 9
+    arg                            shift and go to state 10
 
 state 8
 
-    (1) statement -> PRINTF LEFT_PARENTESIS first_arg additional_args RIGHT_PARENTESIS . SEMICOLON
+    (5) additional_args -> empty .
 
-    SEMICOLON       shift and go to state 13
+    RIGHT_PARENTESIS reduce using rule 5 (additional_args -> empty .)
 
 
 state 9
+
+    (1) statement -> PRINTF LEFT_PARENTESIS first_arg additional_args RIGHT_PARENTESIS . SEMICOLON
+
+    SEMICOLON       shift and go to state 15
+
+
+state 10
 
     (3) additional_args -> COMMA arg . additional_args
     (4) additional_args -> COMMA arg .
     (3) additional_args -> . COMMA arg additional_args
     (4) additional_args -> . COMMA arg
-    (5) additional_args -> .
+    (5) additional_args -> . empty
+    (6) empty -> .
 
   ! reduce/reduce conflict for RIGHT_PARENTESIS resolved using rule 4 (additional_args -> COMMA arg .)
     RIGHT_PARENTESIS reduce using rule 4 (additional_args -> COMMA arg .)
     COMMA           shift and go to state 7
 
-  ! RIGHT_PARENTESIS [ reduce using rule 5 (additional_args -> .) ]
+  ! RIGHT_PARENTESIS [ reduce using rule 6 (empty -> .) ]
 
-    additional_args                shift and go to state 14
-
-state 10
-
-    (6) arg -> INT .
-
-    COMMA           reduce using rule 6 (arg -> INT .)
-    RIGHT_PARENTESIS reduce using rule 6 (arg -> INT .)
-
+    additional_args                shift and go to state 16
+    empty                          shift and go to state 8
 
 state 11
 
-    (7) arg -> FLOAT .
+    (7) arg -> INT .
 
-    COMMA           reduce using rule 7 (arg -> FLOAT .)
-    RIGHT_PARENTESIS reduce using rule 7 (arg -> FLOAT .)
+    COMMA           reduce using rule 7 (arg -> INT .)
+    RIGHT_PARENTESIS reduce using rule 7 (arg -> INT .)
 
 
 state 12
 
-    (8) arg -> IDENTIFIER .
+    (8) arg -> FLOAT .
 
-    COMMA           reduce using rule 8 (arg -> IDENTIFIER .)
-    RIGHT_PARENTESIS reduce using rule 8 (arg -> IDENTIFIER .)
+    COMMA           reduce using rule 8 (arg -> FLOAT .)
+    RIGHT_PARENTESIS reduce using rule 8 (arg -> FLOAT .)
 
 
 state 13
+
+    (9) arg -> STRING .
+
+    COMMA           reduce using rule 9 (arg -> STRING .)
+    RIGHT_PARENTESIS reduce using rule 9 (arg -> STRING .)
+
+
+state 14
+
+    (10) arg -> IDENTIFIER .
+
+    COMMA           reduce using rule 10 (arg -> IDENTIFIER .)
+    RIGHT_PARENTESIS reduce using rule 10 (arg -> IDENTIFIER .)
+
+
+state 15
 
     (1) statement -> PRINTF LEFT_PARENTESIS first_arg additional_args RIGHT_PARENTESIS SEMICOLON .
 
     $end            reduce using rule 1 (statement -> PRINTF LEFT_PARENTESIS first_arg additional_args RIGHT_PARENTESIS SEMICOLON .)
 
 
-state 14
+state 16
 
     (3) additional_args -> COMMA arg additional_args .
 
@@ -169,5 +193,5 @@ state 14
 WARNING: 
 WARNING: Conflicts:
 WARNING: 
-WARNING: reduce/reduce conflict in state 9 resolved using rule (additional_args -> COMMA arg)
-WARNING: rejected rule (additional_args -> <empty>) in state 9
+WARNING: reduce/reduce conflict in state 10 resolved using rule (additional_args -> COMMA arg)
+WARNING: rejected rule (empty -> <empty>) in state 10

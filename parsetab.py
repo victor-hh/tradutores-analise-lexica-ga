@@ -6,9 +6,9 @@ _tabversion = '3.10'
 
 _lr_method = 'LALR'
 
-_lr_signature = 'COMMA FLOAT IDENTIFIER INT LEFT_PARENTESIS PRINTF RIGHT_PARENTESIS SEMICOLON STRINGstatement : PRINTF LEFT_PARENTESIS first_arg additional_args RIGHT_PARENTESIS SEMICOLONfirst_arg : STRINGadditional_args : COMMA arg additional_argsadditional_args : COMMA argadditional_args : arg : INT\n           | FLOAT\n           | IDENTIFIER'
+_lr_signature = 'leftPRINTFleftIDENTIFIERCOMMA FLOAT IDENTIFIER INT LEFT_PARENTESIS PRINTF RIGHT_PARENTESIS SEMICOLON STRINGstatement : PRINTF LEFT_PARENTESIS first_arg additional_args RIGHT_PARENTESIS SEMICOLONfirst_arg : STRINGadditional_args : COMMA arg additional_args\n                       | COMMA arg\n                       | emptyempty :arg : INT\n           | FLOAT\n           | STRING\n           | IDENTIFIER'
     
-_lr_action_items = {'PRINTF':([0,],[2,]),'$end':([1,13,],[0,-1,]),'LEFT_PARENTESIS':([2,],[3,]),'STRING':([3,],[5,]),'COMMA':([4,5,9,10,11,12,],[7,-2,7,-6,-7,-8,]),'RIGHT_PARENTESIS':([4,5,6,9,10,11,12,14,],[-5,-2,8,-4,-6,-7,-8,-3,]),'INT':([7,],[10,]),'FLOAT':([7,],[11,]),'IDENTIFIER':([7,],[12,]),'SEMICOLON':([8,],[13,]),}
+_lr_action_items = {'PRINTF':([0,],[2,]),'$end':([1,15,],[0,-1,]),'LEFT_PARENTESIS':([2,],[3,]),'STRING':([3,7,],[5,13,]),'COMMA':([4,5,10,11,12,13,14,],[7,-2,7,-7,-8,-9,-10,]),'RIGHT_PARENTESIS':([4,5,6,8,10,11,12,13,14,16,],[-6,-2,9,-5,-4,-7,-8,-9,-10,-3,]),'INT':([7,],[11,]),'FLOAT':([7,],[12,]),'IDENTIFIER':([7,],[14,]),'SEMICOLON':([9,],[15,]),}
 
 _lr_action = {}
 for _k, _v in _lr_action_items.items():
@@ -17,7 +17,7 @@ for _k, _v in _lr_action_items.items():
       _lr_action[_x][_k] = _y
 del _lr_action_items
 
-_lr_goto_items = {'statement':([0,],[1,]),'first_arg':([3,],[4,]),'additional_args':([4,9,],[6,14,]),'arg':([7,],[9,]),}
+_lr_goto_items = {'statement':([0,],[1,]),'first_arg':([3,],[4,]),'additional_args':([4,10,],[6,16,]),'empty':([4,10,],[8,8,]),'arg':([7,],[10,]),}
 
 _lr_goto = {}
 for _k, _v in _lr_goto_items.items():
@@ -27,12 +27,14 @@ for _k, _v in _lr_goto_items.items():
 del _lr_goto_items
 _lr_productions = [
   ("S' -> statement","S'",1,None,None,None),
-  ('statement -> PRINTF LEFT_PARENTESIS first_arg additional_args RIGHT_PARENTESIS SEMICOLON','statement',6,'p_statement','main.py',52),
-  ('first_arg -> STRING','first_arg',1,'p_first_arg','main.py',56),
-  ('additional_args -> COMMA arg additional_args','additional_args',3,'p_additional_args_multiple','main.py',60),
-  ('additional_args -> COMMA arg','additional_args',2,'p_additional_args_single','main.py',64),
-  ('additional_args -> <empty>','additional_args',0,'p_additional_args_empty','main.py',68),
-  ('arg -> INT','arg',1,'p_arg','main.py',72),
-  ('arg -> FLOAT','arg',1,'p_arg','main.py',73),
-  ('arg -> IDENTIFIER','arg',1,'p_arg','main.py',74),
+  ('statement -> PRINTF LEFT_PARENTESIS first_arg additional_args RIGHT_PARENTESIS SEMICOLON','statement',6,'p_statement','main.py',60),
+  ('first_arg -> STRING','first_arg',1,'p_first_arg','main.py',65),
+  ('additional_args -> COMMA arg additional_args','additional_args',3,'p_additional_args','main.py',69),
+  ('additional_args -> COMMA arg','additional_args',2,'p_additional_args','main.py',70),
+  ('additional_args -> empty','additional_args',1,'p_additional_args','main.py',71),
+  ('empty -> <empty>','empty',0,'p_empty','main.py',80),
+  ('arg -> INT','arg',1,'p_arg','main.py',84),
+  ('arg -> FLOAT','arg',1,'p_arg','main.py',85),
+  ('arg -> STRING','arg',1,'p_arg','main.py',86),
+  ('arg -> IDENTIFIER','arg',1,'p_arg','main.py',87),
 ]

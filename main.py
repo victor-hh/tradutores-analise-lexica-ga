@@ -1,5 +1,6 @@
 import ply.lex as lex
 import ply.yacc as yacc
+import re
 
 # %s - string
 # %i - int
@@ -15,7 +16,6 @@ reserved = {
 }
 
 tokens = (
-    # 'PRINTF',
     'LEFT_PARENTESIS',
     'RIGHT_PARENTESIS',
     'STRING',
@@ -58,6 +58,7 @@ precedence = (
 
 def p_statement(p):
     '''statement : PRINTF LEFT_PARENTESIS first_arg additional_args RIGHT_PARENTESIS SEMICOLON'''
+    semantic_validation(p)
     print(f"Parsed printf with args: {p[3]} and additional: {p[4]}")
 
 def p_first_arg(p):
@@ -82,11 +83,35 @@ def p_empty(p):
 def p_arg(p):
     '''arg : INT
            | FLOAT
+           | STRING
            | IDENTIFIER'''
     p[0] = p[1]
 
 def p_error(p):
     print("Syntax error at '%s'" % p.value if p else "Syntax error at EOF")
+
+def semantic_validation(p):
+    placeholders = re.findall(r'%[sidf]', p[3])
+    if(len(placeholders) != len(p[4])):
+        raise ValueError('SEMANTIC ERROR')
+    zipped = list(zip(placeholders, p[4]))
+    for pair in zipped:
+        placeholder = pair[0]
+        value = pair[1]
+        if not isinstance(value, str):
+            if(re.match(r'%i', placeholder)):
+                if not isinstance(value, int):
+                    raise ValueError('SEMANTIC ERROR')
+            elif(re.match(r'%[df]', placeholder)):
+                if not isinstance(value, float):
+                    raise ValueError('SEMANTIC ERROR')
+            elif(re.match(r'%s', placeholder)):
+                if not re.match(r'\".*?\"', value):
+                    raise ValueError('SEMANTIC ERROR')
+        elif re.match(r'\".*?\"', value) and re.match(r'%[idf]', placeholder):
+            raise ValueError('SEMANTIC ERROR')
+
+
 
 lexer = lex.lex()
 parser = yacc.yacc()

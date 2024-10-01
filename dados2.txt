@@ -1,4 +1,3 @@
 printf("Olá mundo!");
 printf("valor = %d",nro);
-printf("O calculo correto da expressão %i + %i = %i",nro,nro,nro+nro);
-printf("O produto = %.2f", produto(nro,nro));
+printf("O calculo correto da expressão %i + %d = %i",8,8.1,nro + nro);

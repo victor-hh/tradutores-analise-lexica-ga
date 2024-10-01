@@ -2,10 +2,6 @@ import ply.lex as lex
 import ply.yacc as yacc
 import re
 
-# %s - string
-# %i - int
-# %.f/%.2d - float/double
-
 def ler_arquivo(file_path):
     with open(file_path, 'r', encoding='utf-8') as file:
         linhas = file.readlines() 
@@ -33,7 +29,7 @@ t_COMMA = r','
 t_SEMICOLON = r';'
 
 def t_IDENTIFIER(t):
-    r'[a-zA-Z_][a-zA-Z0-9_]*'
+    r'[a-zA-Z_][a-zA-Z0-9_]*(\s*\+\s*[a-zA-Z_][a-zA-Z0-9_]*)*'
     t.type = reserved.get(t.value, 'IDENTIFIER')
     return t
 
@@ -110,8 +106,6 @@ def semantic_validation(p):
                     raise ValueError('SEMANTIC ERROR')
         elif re.match(r'\".*?\"', value) and re.match(r'%[idf]', placeholder):
             raise ValueError('SEMANTIC ERROR')
-
-
 
 lexer = lex.lex()
 parser = yacc.yacc()
